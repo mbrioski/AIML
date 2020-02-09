@@ -1,0 +1,16 @@
+{
+    "name": "ridesoft/aiml-parser",
+    "description": "Parser library for aiml files",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Maurizio Brioschi",
+            "email": "maurizio.brioschi@gmail.com"
+        }
+    ],
+    "require": {}
+}
