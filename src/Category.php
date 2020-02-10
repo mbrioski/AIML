@@ -9,7 +9,6 @@
  */
 namespace Ridesoft\AIML;
 
-
 class Category
 {
     /** @var string */

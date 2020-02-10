@@ -1,6 +1,6 @@
 AIML library for php
 ---
-[![Build Status](https://travis-ci.org/ridesoft/Aiml-parser.svg?branch=master)](https://travis-ci.org/ridesoft/Aiml-parser)
+[![Build Status](https://travis-ci.org/ridesoft/Aiml-parser.svg?branch=develop)](https://travis-ci.org/ridesoft/Aiml-parser)
 
 Aiml Php library for php compatible with Php 7.3>=.
 
@@ -15,7 +15,13 @@ $categories = $file->setAimlFile('path/to/myAimlValidFile')
 Clone this repositories
 
 ## Run unit test (using docker)
+
 Spin up php7.4 container with:
 ```
 docker run --name aiml-parser -v ${PWD}:/var/www/html --rm -it php:7.4-fpm-alpine vendor/bin/phpunit
+```
+
+##n Check coding standards
+```
+docker run --name aiml-parser -v ${PWD}:/var/www/html --rm -it php:7.4-fpm-alpine vendor/bin/phpcs --standard=PSR2 /var/www/html/src
 ```
