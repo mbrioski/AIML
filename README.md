@@ -18,10 +18,10 @@ Clone this repositories
 
 Spin up php7.4 container with:
 ```
-docker run --name aiml-parser -v ${PWD}:/var/www/html --rm -it php:7.4-fpm-alpine vendor/bin/phpunit
+docker run -v ${PWD}:/var/www/html --rm -it php:7.4-fpm-alpine vendor/bin/phpunit
 ```
 
 ##n Check coding standards
 ```
-docker run --name aiml-parser -v ${PWD}:/var/www/html --rm -it php:7.4-fpm-alpine vendor/bin/phpcs --standard=PSR2 /var/www/html/src
+docker run -v ${PWD}:/var/www/html --rm -it php:7.4-fpm-alpine vendor/bin/phpcs --standard=PSR2 /var/www/html/src
 ```

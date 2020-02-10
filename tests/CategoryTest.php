@@ -14,98 +14,93 @@ use Ridesoft\AIML\Category;
 
 class CategoryTest extends TestCase
 {
-    public function testGetPattern()
+    /**
+     * @dataProvider patternProvider
+     * @param $pattern
+     * @param $template
+     * @param $expectedPattern
+     */
+    public function testGetPattern($pattern, $template, $expectedPattern)
+    {
+        $category = new Category($pattern, $template);
+        $this->assertEquals($expectedPattern, $category->getPattern());
+    }
+
+    /**
+     * @dataProvider templateProvider
+     * @param $pattern
+     * @param $template
+     * @param $expected
+     * @param mixed ...$args
+     */
+    public function testGetTemplate($pattern, $template, $expected, array $args = [])
+    {
+        $category = new Category($pattern, $template);
+        if (!empty($args)) {
+            $this->assertEquals($expected, $category->getTemplate($args));
+        }
+        //$this->assertEquals($expected, $category->getTemplate());
+    }
+
+    public function testIsTemplateSrai()
     {
         $category = new Category('pattern', 'template');
-        $this->assertEquals('pattern', $category->getPattern());
+        $this->assertFalse($category->isTemplateSrai());
+
+        $category = new Category(
+            'pattern',
+            '<srai>My family has three elements: <star index="1"/>, <star index="2"/> and <star index="3"/></srai>'
+        );
+        $this->assertTrue($category->isTemplateSrai());
     }
 
-    public function testGetTemplate()
+    public function patternProvider()
     {
-        $category = new Category('pattern', 'template');
-        $this->assertEquals('template', $category->getTemplate());
-
-        $category = new Category(
-            '* is a *.',
-            "<star index=\"1\"/> is a <star index=\"2\"/>?"
-        );
-        $this->assertEquals(
-            'Mauri is a rock star?',
-            $category->getTemplate('Mauri', 'rock star')
-        );
-
-        $category = new Category(
-            'I love *',
-            "I love <star/>"
-        );
-        $this->assertEquals(
-            'I love pussy',
-            $category->getTemplate('pussy')
-        );
+        return [
+            [
+                'pattern',
+                'template',
+                'pattern'
+            ],
+            [
+                'DO YOU KNOW WHO * IS?',
+                "<srai>WHO IS <star/>?</srai>",
+                "WHO IS <star/>?"
+            ],
+            [
+                'BYE *',
+                '<srai>BYE</srai>',
+                'BYE'
+            ],
+            [
+                'My family is done by *,* and *',
+                '<srai>My family has three elements: <star index="1"/>, <star index="2"/> and <star index="3"/></srai>',
+                'My family has three elements: <star index="1"/>, <star index="2"/> and <star index="3"/>'
+            ],
+        ];
     }
 
-    public function testGetStars()
+    public function templateProvider()
     {
-        $category = new Category(
-            'A * is a *.',
-            "When a <star index=\"1\"/>is not a<star index=\"2\"/>?"
-        );
-        $stars = $category->getStars('Mauri', 'snowboarder');
-        $this->assertEquals(2, count($stars));
-        $this->assertEquals('Mauri', $stars[1]);
-        $this->assertEquals('snowboarder', $stars[2]);
-
-        $category = new Category(
-            'I love *',
-            "I love <star/>"
-        );
-        $stars = $category->getStars('Pussy');
-        $this->assertEquals(1, count($stars));
-        $this->assertEquals('Pussy', $stars[1]);
+        return [
+            [
+                'pattern',
+                'template',
+                'template'
+            ],
+            [
+                '* is a *.',
+                '<star index="1"/> is a <star index="2"/>?',
+                'Mauri is a rock star?',
+                ['Mauri', 'rock star']
+            ],
+            [
+                'I love *',
+                "I love <star/>",
+                'I love pussy',
+                ['pussy']
+            ]
+        ];
     }
 
-    public function testSrai()
-    {
-        $category = new Category(
-            'DO YOU KNOW WHO * IS?',
-            "<srai>WHO IS <star/>?</srai>"
-        );
-        $this->assertEquals(
-            'WHO IS *?',
-            $category->getPattern()
-        );
-
-        $category = new Category(
-            'BYE *',
-            "<srai>BYE</srai>"
-        );
-        $this->assertEquals(
-            'BYE',
-            $category->getPattern()
-        );
-
-        $category = new Category(
-            'I like * and *',
-            "<srai>I like <star index=\"1\"/>,<star index=\"2\"/></srai>"
-        );
-        $this->assertEquals(
-            'I like *,*',
-            $category->getPattern()
-        );
-
-        $category = new Category(
-            'My family is done by *,* and *',
-            "<srai>My family has three elements: <star index=\"1\"/>, <star index=\"2\"/> and <star index=\"3\"/></srai>"
-        );
-        $this->assertEquals(
-            'My family has three elements: *, * and *',
-            $category->getPattern()
-        );
-        $this->assertEquals(
-            'My family has three elements: *, * and *',
-            $category->getTemplate()
-        );
-
-
-    }
 }

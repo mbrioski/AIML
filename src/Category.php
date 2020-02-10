@@ -42,58 +42,43 @@ class Category
                     $this->pattern
                 )
             );
-            $this->pattern = str_replace("<star/>", '*', $this->pattern);
-            preg_match_all('/<star index="\d"\/>/', $this->pattern, $output);
-            foreach ($output as $value) {
-                $this->pattern = str_replace($value, '*', $this->pattern);
-            }
+//            $this->pattern = str_replace("<star/>", '*', $this->pattern);
+//            preg_match_all('/<star index="\d"\/>/', $this->pattern, $output);
+//            foreach ($output as $value) {
+//                $this->pattern = str_replace($value, '*', $this->pattern);
+//            }
         }
         return $this->pattern;
     }
 
     /**
-     * Return the template element or the patter when the category is a srai
+     * Return the template element
+     * If the template is type srai, return the original template
+     * If the template is not srai, return the template filled with the correct stars
      *
-     * @param string ...$stars
+     * @param array $stars
      * @return string
      */
-    public function getTemplate(string ...$stars): string
+    public function getTemplate(array $stars = []): ?string
     {
+        if (count($stars) === 0) {
+            return $this->template;
+        }
+        //$this->setStars($stars);
+        $this->stars = array_merge([], $stars);
         if ($this->isTemplateSrai()) {
-            return $this->getPattern();
+            return $this->getContentFilledWithStars($this->getPattern());
         }
-        $matches = preg_match_all('/\*/m', $this->getPattern(), $arguments);
-        if ($matches > 0 && count($stars) == $matches) {
-            for ($i = 0; $i < $matches; $i++) {
-                $this->stars[$i + 1] = $stars[$i];
-            }
-        }
-        if ($matches === 1) {
-            $this->template = str_replace("<star/>", $this->stars[1], $this->template);
-        } elseif ($matches > 1) {
-            foreach ($this->stars as $key => $star) {
-                $this->template = str_replace("<star index=\"" . $key . "\"/>", $star, $this->template);
-            }
-        }
-        return $this->template;
+        return $this->getContentFilledWithStars($this->template);
     }
+
 
     /**
-     * @param array $stars
-     * @return array
+     * Check if the template has the tag srai
+     * If it is strai, set the pattern with the content of srai
+     * @return bool
      */
-    public function getStars(...$stars): array
-    {
-        $matches = preg_match_all('/\*/m', $this->pattern, $arguments);
-        if ($matches > 0 && count($stars) == $matches) {
-            for ($i = 0; $i < $matches; $i++) {
-                $this->stars[$i + 1] = $stars[$i];
-            }
-        }
-        return $this->stars;
-    }
-
-    protected function isTemplateSrai(): bool
+    public function isTemplateSrai(): bool
     {
         $this->isTemplateSrai = false;
         $found = preg_match('/<srai>(.*?)<\/srai>/', $this->template, $output);
@@ -102,5 +87,36 @@ class Category
             $this->pattern = $output[1];
         }
         return $this->isTemplateSrai;
+    }
+
+    /**
+     * @param array $stars
+     * @return void
+     */
+    protected function setStars(array $stars): self
+    {
+        $matches = preg_match_all('/\*/m', $this->pattern, $arguments);
+        for ($i = 0; $i < $matches; $i++) {
+            $this->stars[$i + 1] = $stars[$i];
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $content
+     * @return string
+     */
+    protected function getContentFilledWithStars(string $content): string
+    {
+        if (count($this->stars) === 1) {
+            $content = str_replace("<star/>", $this->stars[0], $content);
+        } elseif (count($this->stars) > 1) {
+            foreach ($this->stars as $key => $star) {
+                $index = $key + 1;
+                $content = str_replace("<star index=\"" . $index . "\"/>", $star, $content);
+            }
+        }
+        return $content;
     }
 }

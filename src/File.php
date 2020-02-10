@@ -56,7 +56,7 @@ class File
      */
     protected function parse(): self
     {
-        $xmldata = simplexml_load_file($this->getAimlFile());
+        $xmldata = simplexml_load_file($this->getAimlFile(), "SimpleXMLElement", LIBXML_NOCDATA);
         if (!$xmldata) {
             throw new \InvalidArgumentException(
                 'File ' . $this->getAimlFile() . ' is not a valid xml(aiml) file'
@@ -71,7 +71,18 @@ class File
             }
             array_push(
                 $this->categories,
-                new Category($xmldata->category[$i]->pattern, $xmldata->category[$i]->template)
+                new Category(
+                    $xmldata->category[$i]->pattern,
+                    str_replace(
+                        '<template>',
+                        '',
+                        str_replace(
+                            '</template>',
+                            '',
+                            $xmldata->category[$i]->template->asXML()
+                        )
+                    )
+                )
             );
         }
 

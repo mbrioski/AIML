@@ -2,6 +2,10 @@
 <aiml version="1.0.1" encoding="UTF-8">
     <category>
         <pattern>A * is a *.</pattern>
-        <template>When a <star index="1"/>is not a<star index="2"/>?</template>
+        <template>When <star index="1"/> is a <star index="2"/>.</template>
+    </category>
+    <category>
+        <pattern>A *.</pattern>
+        <template>When <star/>.</template>
     </category>
 </aiml>

@@ -2,14 +2,10 @@
 <aiml version="1.0.1" encoding="UTF-8">
     <category>
         <pattern>HELLO Aiml</pattern>
-        <template>
-            Hello User
-        </template>
+        <template>Hello User</template>
     </category>
     <category>
-        <pattern>How are u</pattern>
-        <template>
-           I'm fine
-        </template>
+        <pattern>How are u?</pattern>
+        <template>I'm fine</template>
     </category>
 </aiml>
