@@ -55,10 +55,10 @@ class File
             );
         }
         for ($i = 0; $i < count($xmldata->category); $i++) {
-            if (!array_key_exists('pattern', $xmldata->category[$i])) {
+            if (!property_exists($xmldata->category[$i], 'pattern')) {
                 throw new InvalidCategoryException('Pattern not found in file ' . $this->getAimlFile());
             }
-            if (!array_key_exists('template', $xmldata->category[$i])) {
+            if (!property_exists($xmldata->category[$i], 'template')) {
                 throw new InvalidCategoryException('Template not found in file ' . $this->getAimlFile());
             }
             array_push(
