@@ -107,7 +107,7 @@ class FileTest extends TestCase
                 [
                     ['Who is Mauri?', "Mauri is a tech lead", []],
                     ['Who is Mayla?', "Mayla is mauri wife", []],
-                    ['Who is <star/>?', 'Who is Mauri?', ['Mauri']],
+                    ['Who * is?', 'Who is Mauri?', ['Mauri']],
                 ]
             ],
         ];

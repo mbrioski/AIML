@@ -32,22 +32,6 @@ class Category
      */
     public function getPattern()
     {
-        if ($this->isTemplateSrai()) {
-            $this->pattern = str_replace(
-                '<srai>',
-                '',
-                str_replace(
-                    '</srai>',
-                    '',
-                    $this->pattern
-                )
-            );
-//            $this->pattern = str_replace("<star/>", '*', $this->pattern);
-//            preg_match_all('/<star index="\d"\/>/', $this->pattern, $output);
-//            foreach ($output as $value) {
-//                $this->pattern = str_replace($value, '*', $this->pattern);
-//            }
-        }
         return $this->pattern;
     }
 
@@ -64,12 +48,12 @@ class Category
         if (count($stars) === 0) {
             return $this->template;
         }
-        //$this->setStars($stars);
         $this->stars = array_merge([], $stars);
+        $content = $this->getContentFilledWithStars($this->template);
         if ($this->isTemplateSrai()) {
-            return $this->getContentFilledWithStars($this->getPattern());
+            $content = str_replace('<srai>', '', str_replace('</srai>', '', $content));
         }
-        return $this->getContentFilledWithStars($this->template);
+        return $content;
     }
 
 
@@ -84,23 +68,9 @@ class Category
         $found = preg_match('/<srai>(.*?)<\/srai>/', $this->template, $output);
         if ($found) {
             $this->isTemplateSrai = true;
-            $this->pattern = $output[1];
+            $this->template = $output[1];
         }
         return $this->isTemplateSrai;
-    }
-
-    /**
-     * @param array $stars
-     * @return void
-     */
-    protected function setStars(array $stars): self
-    {
-        $matches = preg_match_all('/\*/m', $this->pattern, $arguments);
-        for ($i = 0; $i < $matches; $i++) {
-            $this->stars[$i + 1] = $stars[$i];
-        }
-
-        return $this;
     }
 
     /**

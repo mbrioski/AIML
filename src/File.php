@@ -39,6 +39,7 @@ class File
 
     /**
      * @return array
+     * @throws \Exception
      */
     public function getCategories(): array
     {

@@ -39,7 +39,6 @@ class CategoryTest extends TestCase
         if (!empty($args)) {
             $this->assertEquals($expected, $category->getTemplate($args));
         }
-        //$this->assertEquals($expected, $category->getTemplate());
     }
 
     public function testIsTemplateSrai()
@@ -65,17 +64,17 @@ class CategoryTest extends TestCase
             [
                 'DO YOU KNOW WHO * IS?',
                 "<srai>WHO IS <star/>?</srai>",
-                "WHO IS <star/>?"
+                "DO YOU KNOW WHO * IS?"
             ],
             [
                 'BYE *',
                 '<srai>BYE</srai>',
-                'BYE'
+                'BYE *'
             ],
             [
                 'My family is done by *,* and *',
                 '<srai>My family has three elements: <star index="1"/>, <star index="2"/> and <star index="3"/></srai>',
-                'My family has three elements: <star index="1"/>, <star index="2"/> and <star index="3"/>'
+                'My family is done by *,* and *'
             ],
         ];
     }
