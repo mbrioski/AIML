@@ -10,7 +10,9 @@
 namespace Rideaoft\AIML\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Ridesoft\AIML\Category;
 use Ridesoft\AIML\Exception\InvalidCategoryException;
+use Ridesoft\AIML\Exception\InvalidSearchedPatternException;
 use Ridesoft\AIML\File;
 
 class FileTest extends TestCase
@@ -74,6 +76,43 @@ class FileTest extends TestCase
         $this->file->getCategories();
     }
 
+    /**
+     * @dataProvider getCategoryMatchProvider
+     * @param $file
+     * @param $pattern
+     * @param $category
+     */
+    public function testGetCategory($file, $pattern, $category)
+    {
+        $this->file->setAimlFile($file);
+        $categoryFound = $this->file->getCategory($pattern);
+        $this->assertNotNull($categoryFound);
+        $this->isInstanceOf(Category::class, $categoryFound);
+        $this->assertEquals($category, $categoryFound);
+    }
+
+    public function testInvalidSearchedPatternException()
+    {
+        $this->expectException(InvalidSearchedPatternException::class);
+        $this->file->setAimlFile(__DIR__ . '/files/simple.aiml')
+            ->getCategory('Hello Mauri');
+    }
+
+
+    public function testInvalidSearchedPatternExceptionStar()
+    {
+        $this->expectException(InvalidSearchedPatternException::class);
+        $this->file->setAimlFile(__DIR__ . '/files/star.aiml')
+            ->getCategory('A Mauri Brioschi.');
+    }
+
+    public function testInvalidSearchedPatternExceptionSrai()
+    {
+        $this->expectException(InvalidSearchedPatternException::class);
+        $this->file->setAimlFile(__DIR__ . '/files/srai.aiml')
+            ->getCategory('Who Mauri Brioschi is?');
+    }
+
     public function fileProvider()
     {
         return [
@@ -109,6 +148,29 @@ class FileTest extends TestCase
                     ['Who is Mayla?', "Mayla is mauri wife", []],
                     ['Who * is?', 'Who is Mauri?', ['Mauri']],
                 ]
+            ],
+        ];
+    }
+
+    public function getCategoryMatchProvider()
+    {
+        $starMatch = new Category('A *.', 'When <star/>.');
+        $starMatch->setStars(['Mauri']);
+        return [
+            [
+                __DIR__ . '/files/simple.aiml', 'HELLO Aiml', new Category('HELLO Aiml', 'Hello User')
+            ],
+            [
+                __DIR__ . '/files/simple.aiml', 'hello aIml', new Category('HELLO Aiml', 'Hello User')
+            ],
+            [
+                __DIR__ . '/files/star.aiml', 'A Mauri', $starMatch
+            ],
+            [
+                __DIR__ . '/files/srai.aiml', 'Who is Mayla?', new Category('Who is Mayla?', 'Mayla is mauri wife')
+            ],
+            [
+                __DIR__ . '/files/srai.aiml', 'Who * is?', new Category('Who * is?', '<srai>Who is <star/>?</srai>')
             ],
         ];
     }

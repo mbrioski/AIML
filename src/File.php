@@ -11,6 +11,7 @@
 namespace Ridesoft\AIML;
 
 use Ridesoft\AIML\Exception\InvalidCategoryException;
+use Ridesoft\AIML\Exception\InvalidSearchedPatternException;
 
 class File implements SourceInterface
 {
@@ -55,12 +56,39 @@ class File implements SourceInterface
     /**
      * @inheritDoc
      */
-    public function getCategory(string $contentToMatch): Category
+    public function getCategory(string $contentToMatch): ?Category
     {
+        $contentWords = explode(' ', $contentToMatch);
+        $stars = [];
         /** @var Category $category */
         foreach ($this->getCategories() as $category) {
-            //matching logic here
+            $pattern = $category->getPattern();
+            $patternWords = explode(' ', $pattern);
+            $foundPattern = false;
+            for ($i = 0; $i < count($patternWords); $i++) {
+                if (count($patternWords) !== count($contentWords)) {
+                    continue;
+                }
+                $stars = [];
+                if (strstr($patternWords[$i], '*') !== false) {
+                    $foundPattern = true;
+                    array_push($stars, $contentWords[$i]);
+                    continue;
+                }
+                if (strcmp(strtolower($patternWords[$i]), strtolower($contentWords[$i])) === 0) {
+                    $foundPattern = true;
+                } else {
+                    $foundPattern = false;
+                    break;
+                }
+            }
+            if ($foundPattern) {
+                return $category->setStars($stars);
+            }
         }
+        throw new InvalidSearchedPatternException(
+            'Pattern ' . $contentToMatch . ' not found in file ' . $this->getAimlFile()
+        );
     }
 
     /**

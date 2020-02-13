@@ -16,5 +16,5 @@ interface SourceInterface
      * @param string $contentToMatch
      * @return Category
      */
-    public function getCategory(string $contentToMatch): Category;
+    public function getCategory(string $contentToMatch): ?Category;
 }

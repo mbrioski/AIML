@@ -48,7 +48,9 @@ class Category
         if (count($stars) === 0) {
             return $this->template;
         }
-        $this->stars = array_merge([], $stars);
+        if (!empty($stars)) {
+            $this->stars = array_merge([], $stars);
+        }
         $content = $this->getContentFilledWithStars($this->template);
         if ($this->isTemplateSrai()) {
             $content = str_replace('<srai>', '', str_replace('</srai>', '', $content));
@@ -71,6 +73,16 @@ class Category
             $this->template = $output[1];
         }
         return $this->isTemplateSrai;
+    }
+
+    /**
+     * @param array $stars
+     * @return $this
+     */
+    public function setStars(array $stars): self
+    {
+        $this->stars = $stars;
+        return $this;
     }
 
     /**
