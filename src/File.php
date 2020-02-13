@@ -12,7 +12,7 @@ namespace Ridesoft\AIML;
 
 use Ridesoft\AIML\Exception\InvalidCategoryException;
 
-class File
+class File implements SourceInterface
 {
     /** @var string */
     protected $aimlFile;
@@ -38,7 +38,7 @@ class File
     }
 
     /**
-     * @return array
+     * @return array|Category
      * @throws \Exception
      */
     public function getCategories(): array
@@ -50,6 +50,17 @@ class File
             $this->parse();
         }
         return $this->categories;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCategory(string $contentToMatch): Category
+    {
+        /** @var Category $category */
+        foreach ($this->getCategories() as $category) {
+            //matching logic here
+        }
     }
 
     /**
