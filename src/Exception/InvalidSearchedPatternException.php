@@ -9,7 +9,7 @@
  */
 namespace Ridesoft\AIML\Exception;
 
-class InvalidCategoryException extends \InvalidArgumentException
+class InvalidSearchedPatternException extends \InvalidArgumentException
 {
 
 }

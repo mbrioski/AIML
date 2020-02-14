@@ -11,8 +11,9 @@
 namespace Ridesoft\AIML;
 
 use Ridesoft\AIML\Exception\InvalidCategoryException;
+use Ridesoft\AIML\Exception\InvalidSearchedPatternException;
 
-class File
+class File implements SourceInterface
 {
     /** @var string */
     protected $aimlFile;
@@ -38,7 +39,8 @@ class File
     }
 
     /**
-     * @return array
+     * @return array|Category
+     * @throws \Exception
      */
     public function getCategories(): array
     {
@@ -52,11 +54,49 @@ class File
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getCategory(string $contentToMatch): ?Category
+    {
+        $contentWords = explode(' ', $contentToMatch);
+        $stars = [];
+        /** @var Category $category */
+        foreach ($this->getCategories() as $category) {
+            $pattern = $category->getPattern();
+            $patternWords = explode(' ', $pattern);
+            $foundPattern = false;
+            $stars = [];
+            for ($i = 0; $i < count($patternWords); $i++) {
+                if (count($patternWords) !== count($contentWords)) {
+                    continue;
+                }
+                if (strstr($patternWords[$i], '*') !== false) {
+                    $foundPattern = true;
+                    array_push($stars, $contentWords[$i]);
+                    continue;
+                }
+                if (strcmp(strtolower($patternWords[$i]), strtolower($contentWords[$i])) === 0) {
+                    $foundPattern = true;
+                } else {
+                    $foundPattern = false;
+                    break;
+                }
+            }
+            if ($foundPattern) {
+                return $category->setStars($stars);
+            }
+        }
+        throw new InvalidSearchedPatternException(
+            'Pattern ' . $contentToMatch . ' not found in file ' . $this->getAimlFile()
+        );
+    }
+
+    /**
      * @return $this
      */
     protected function parse(): self
     {
-        $xmldata = simplexml_load_file($this->getAimlFile());
+        $xmldata = simplexml_load_file($this->getAimlFile(), "SimpleXMLElement", LIBXML_NOCDATA);
         if (!$xmldata) {
             throw new \InvalidArgumentException(
                 'File ' . $this->getAimlFile() . ' is not a valid xml(aiml) file'
@@ -71,11 +111,21 @@ class File
             }
             array_push(
                 $this->categories,
-                new Category($xmldata->category[$i]->pattern, $xmldata->category[$i]->template)
+                new Category(
+                    $xmldata->category[$i]->pattern,
+                    str_replace(
+                        '<template>',
+                        '',
+                        str_replace(
+                            '</template>',
+                            '',
+                            $xmldata->category[$i]->template->asXML()
+                        )
+                    )
+                )
             );
         }
 
         return $this;
     }
 }
-
