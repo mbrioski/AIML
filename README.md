@@ -7,6 +7,8 @@ Aiml Php library for php, compatible with Php 7.3>=.
 AIML stands for Artificial Intelligence Modelling Language. AIML is an XML based markup language meant to create 
 artificial intelligent applications.
 
+[AIML Reference](https://www.pandorabots.com/docs/aiml-reference/)
+
 ## Supported language tags
 * `<pattern>`
 * `<template>`
