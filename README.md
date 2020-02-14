@@ -15,7 +15,7 @@ artificial intelligent applications.
 
 ## How install it
 
-`composer require ridesoft/aiml:~0.1.0
+`composer require ridesoft/aiml:~0.1.0`
 
 ## Base usage example
 
