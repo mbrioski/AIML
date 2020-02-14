@@ -156,6 +156,8 @@ class FileTest extends TestCase
     {
         $starMatch = new Category('A *.', 'When <star/>.');
         $starMatch->setStars(['Mauri']);
+        $sraiStarMatch = new Category('Who * is?', '<srai>Who is <star/>?</srai>');
+        $sraiStarMatch->setStars(['Mauri']);
         return [
             [
                 __DIR__ . '/files/simple.aiml', 'HELLO Aiml', new Category('HELLO Aiml', 'Hello User')
@@ -170,7 +172,7 @@ class FileTest extends TestCase
                 __DIR__ . '/files/srai.aiml', 'Who is Mayla?', new Category('Who is Mayla?', 'Mayla is mauri wife')
             ],
             [
-                __DIR__ . '/files/srai.aiml', 'Who * is?', new Category('Who * is?', '<srai>Who is <star/>?</srai>')
+                __DIR__ . '/files/srai.aiml', 'Who Mauri is?', $sraiStarMatch
             ],
         ];
     }

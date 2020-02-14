@@ -65,11 +65,11 @@ class File implements SourceInterface
             $pattern = $category->getPattern();
             $patternWords = explode(' ', $pattern);
             $foundPattern = false;
+            $stars = [];
             for ($i = 0; $i < count($patternWords); $i++) {
                 if (count($patternWords) !== count($contentWords)) {
                     continue;
                 }
-                $stars = [];
                 if (strstr($patternWords[$i], '*') !== false) {
                     $foundPattern = true;
                     array_push($stars, $contentWords[$i]);

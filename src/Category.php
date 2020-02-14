@@ -86,6 +86,14 @@ class Category
     }
 
     /**
+     * @return array
+     */
+    public function getStars(): array
+    {
+        return $this->stars;
+    }
+
+    /**
      * @param string $content
      * @return string
      */
