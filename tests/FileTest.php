@@ -118,10 +118,11 @@ class FileTest extends TestCase
         return [
             [
                 __DIR__ . '/files/simple.aiml',
-                2,
+                3,
                 [
                     ['HELLO Aiml', 'Hello User', []],
-                    ['How are u?', "I'm fine", []]
+                    ['How are u?', "I'm fine", []],
+                    ['Where is london?', "London is in Great Britain", []]
                 ]
             ],
             [

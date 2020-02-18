@@ -8,4 +8,8 @@
         <pattern>How are u?</pattern>
         <template>I'm fine</template>
     </category>
+    <category>
+        <pattern>* LONDON?</pattern>
+        <template>* in Great Britain</template>
+    </category>
 </aiml>
